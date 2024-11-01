@@ -1,0 +1,109 @@
+import "siblibrary.mgl" as siblib
+stylePath "cincodebio.msl"
+
+// @generatable("info.scce.cinco.product.hippoflow.Generator",null)
+// @mcam(check)
+// @mcam_checkmodule("info.scce.cinco.product.hippoflow.check.SIBCheck")
+// @mcam_checkmodule("info.scce.cinco.product.hippoflow.check.DataFlowCheck")
+// @mcam_checkmodule("info.scce.cinco.product.hippoflow.check.ControlFlowCheck")
+@Validation(SIBCheck)
+@Validation(DataFlowCheck)
+@Validation(ControlFlowCheck)
+@GeneratorAction(CincoDeBioGenerator)
+graphModel CincoDeBioGraphModel {
+	iconPath "icons/ProcessModel.png"
+	diagramExtension "flow"
+	
+	containableElements(SIB)
+}
+
+/*** SIBs ***/
+@AppearanceProvider(SibAppearanceProvider)
+abstract container SIB {
+	// @mcam_label
+	attr string as label := "<unnamed>"
+	attr string as name := "<unnamed>"
+	
+	containableElements(SIBLabel,IO)
+	
+	incomingEdges(ControlFlow)
+	outgoingEdges(ControlFlow[0,*])
+}
+
+// @postCreate("info.scce.cinco.product.hippoflow.hook.flow.ServiceSIBPostCreate")
+// @postMove("info.scce.cinco.product.hippoflow.hook.flow.ServiceSIBPostMove")
+// @postResize("info.scce.cinco.product.hippoflow.hook.flow.ServiceSIBPostResize")
+// @contextMenuAction("info.scce.cinco.product.hippoflow.action.UpdateServiceSIBAction")
+// ClassName, methodname 
+@Hook(AutomatedSibHook, PostCreate, PostMove, PostResize)
+@AppearanceProvider(SibAppearanceProvider)
+container AutomatedSIB extends SIB {
+	style sib
+	prime siblib::Service as service
+}
+
+// @postCreate("info.scce.cinco.product.hippoflow.hook.flow.TaskSIBPostCreate")
+// @postMove("info.scce.cinco.product.hippoflow.hook.flow.TaskSIBPostMove")
+// @postResize("info.scce.cinco.product.hippoflow.hook.flow.TaskSIBPostResize")
+// @contextMenuAction("info.scce.cinco.product.hippoflow.action.UpdateTaskSIBAction")
+@Hook(InteractiveSibHook, PostCreate, PostMove, PostResize)
+@AppearanceProvider(SibAppearanceProvider)
+container InteractiveSIB extends SIB {
+	style sib
+	
+//	@pvFileExtension("sibs")
+//	@pvLabel(label)
+	prime siblib::Task as task
+}
+@disable(create,delete,move,resize)
+@disable(select)
+@AppearanceProvider(SibLabelAppearanceProvider)
+node SIBLabel {
+	style sibLabel("${label}")
+	attr string as label := "<unnamed>"
+}
+
+/*** Input / Output ***/
+
+abstract node IO {
+	// @mcam_label
+	attr string as name := "port"
+	attr boolean as isList := "false"
+}
+
+@disable(create,delete,move,resize)
+@AppearanceProvider(InputAppearanceProvider)
+node InputPort extends IO {
+	style inputPort("${name}", "${isList ? '[' : ''}", "${typeName}", "${isList ? ']' : ''}")
+	
+	attr string as typeName := "??"
+	
+	incomingEdges(DataFlow[0,1])
+}
+
+@disable(create,delete,move,resize)
+@AppearanceProvider(OutputAppearanceProvider)
+node OutputPort extends IO {
+	style outputPort("${name}", "${isList ? '[' : ''}", "${typeName}", "${isList ? ']' : ''}")
+	
+	attr string as typeName := "??"
+	
+	outgoingEdges(DataFlow)
+}
+
+/*** Control / Data Flow ***/
+
+// @postCreate("info.scce.cinco.product.hippoflow.hook.flow.ControlFlowPostCreate")
+@Hook(ControlFlowHook, PostCreate)
+edge ControlFlow {
+	style controlFlow("${label}")
+	
+	// @possibleValuesProvider("info.scce.cinco.product.hippoflow.ControlFlowAvailableBranchNameProvider")
+	attr string as label := ""
+}
+
+// @postCreate("info.scce.cinco.product.hippoflow.hook.flow.DataFlowPostCreate")
+@Hook(DataFlowHook, PostCreate)
+edge DataFlow {
+	style dataFlow
+}

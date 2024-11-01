@@ -1,0 +1,90 @@
+stylePath "siblibrary.msl"
+
+graphModel SIBLibrary {
+	diagramExtension "sibs"
+	
+	containableElements(SIBDef)
+}
+
+abstract container SIBDef {
+	attr string as name := "<unnamed>"
+	attr string as label := "<unnamed>"
+	// @multiLine
+	attr string as documentation
+	
+	containableElements(Label,IODef,Branch)
+}
+
+// @postCreate("info.scce.cinco.product.hippoflow.hook.lib.ServicePostCreate")
+// @postMove("info.scce.cinco.product.hippoflow.hook.lib.ServicePostMove")
+// @postResize("info.scce.cinco.product.hippoflow.hook.lib.ServicePostResize")
+@Hook(AutomatedHook,PostCreate, PostMove, PostResize)
+@AppearanceProvider(ServiceAppearanceProvider)
+container Service extends SIBDef {
+	style service
+}
+
+// @postCreate("info.scce.cinco.product.hippoflow.hook.lib.TaskPostCreate")
+// @postMove("info.scce.cinco.product.hippoflow.hook.lib.TaskPostMove")
+// @postResize("info.scce.cinco.product.hippoflow.hook.lib.TaskPostResize")
+@Hook(InteractiveHook,PostCreate,PostMove,PostResize)
+@AppearanceProvider(TaskAppearanceProvider)
+container Task extends SIBDef {
+	style task
+}
+
+@disable(create,delete,move,resize)
+@disable(select)
+@AppearanceProvider(SibLibInputAppearanceProvider)
+node Label {
+	style label("${name}", "${label}")
+	
+	attr string as name := "<unnamed>"
+	attr string as label := "<unnamed>"
+}
+
+/*** Input / Output ***/
+
+abstract node IODef {
+	// @mcam_label
+	attr string as name := "<unnamed>"
+	attr string as typeName := "<untyped>"
+	attr string as isList := "false"
+}
+
+@disable(resize)
+@palette("IO")
+// @postCreate("info.scce.cinco.product.hippoflow.hook.lib.InputPostCreate")
+// @postMove("info.scce.cinco.product.hippoflow.hook.NodePostMove")
+// @postResize("info.scce.cinco.product.hippoflow.hook.NodePostResize")
+// @postDelete("info.scce.cinco.product.hippoflow.hook.NodePostDelete")
+@Hook(NodeHook,PostCreate,PostMove,PostResize,PostDelete)
+@AppearanceProvider(SibLibInputAppearanceProvider)
+node Input extends IODef {
+	style input("${name}", "${isList ? '[' : ''}", "${typeName}", "${isList ? ']' : ''}")
+}
+
+@disable(resize)
+@palette("IO")
+// @postCreate("info.scce.cinco.product.hippoflow.hook.lib.OutputPostCreate")
+// @postMove("info.scce.cinco.product.hippoflow.hook.NodePostMove")
+// @postResize("info.scce.cinco.product.hippoflow.hook.NodePostResize")
+// @postDelete("info.scce.cinco.product.hippoflow.hook.NodePostDelete")
+@Hook(NodeHook,PostCreate,PostMove,PostResize,PostDelete)
+@AppearanceProvider(SibLibOutputAppearanceProvider)
+node Output extends IODef {
+	style output("${name}", "${isList ? '[' : ''}", "${typeName}", "${isList ? ']' : ''}")
+}
+
+@disable(resize)
+@palette("Branching")
+// @postCreate("info.scce.cinco.product.hippoflow.hook.NodePostCreate")
+// @postMove("info.scce.cinco.product.hippoflow.hook.NodePostMove")
+// @postResize("info.scce.cinco.product.hippoflow.hook.NodePostResize")
+// @postDelete("info.scce.cinco.product.hippoflow.hook.NodePostDelete")
+@Hook(NodeHook,PostCreate,PostMove,PostResize,PostDelete)
+node Branch {
+	style branch("${name}")
+	// @mcam_label
+	attr string as name := "<unnamed>"
+}
