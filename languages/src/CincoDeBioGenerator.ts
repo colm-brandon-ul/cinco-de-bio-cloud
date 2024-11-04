@@ -9,7 +9,7 @@ export class CincoDeBioGenerator extends GeneratorHandler {
         // parse action
         const model = this.getElement(action.modelElementId);
 
-        this.info("Generating Workflow Execution Program")
+        this.warn("Generating Workflow Execution Program")
 
         // generate
         this.generate(model as GraphModel);

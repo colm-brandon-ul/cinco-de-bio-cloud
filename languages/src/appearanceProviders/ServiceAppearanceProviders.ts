@@ -31,7 +31,7 @@ export class ServiceAppearanceProvider extends AppearanceProvider {
         const element = this.getElement(modelElementId);
 
         const message = 'Element [' + element.type + ', ' + modelElementId + '] is changing appearance.';
-        this.warn(message);
+        this.log(message);
 
 
 

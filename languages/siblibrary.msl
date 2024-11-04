@@ -61,7 +61,7 @@ nodeStyle label(2) {
 	}
 }
 
-nodeStyle input(4) {
+nodeStyle input(2) {
 	// appearanceProvider("info.scce.cinco.product.hippoflow.appear.lib.InputAppearance")
 	rectangle  {
 		appearance extends default {
@@ -78,12 +78,12 @@ nodeStyle input(4) {
 		text {
 			appearance labelFontItalics
 			position (LEFT 25, MIDDLE)
-		 	value "%s : %s%s%s"
+		 	value "%s : %s"
 		}
 	}
 }
 
-nodeStyle output(4) {
+nodeStyle output(2) {
 	// appearanceProvider("info.scce.cinco.product.hippoflow.appear.lib.OutputAppearance")
 	rectangle {
 		appearance extends default {
@@ -93,14 +93,14 @@ nodeStyle output(4) {
 		}
 		size (236,30)
 		image {
-			position (LEFT, MIDDLE)
+			position (RIGHT, MIDDLE)
 		 	size (fix 15, fix 30)
 		 	path ( "icons/arrow-output-filled-300.png" )
 		}
 		text {
 			appearance labelFontItalics
 			position (LEFT 25, MIDDLE)
-		 	value "%s : %s%s%s"
+		 	value "%s : %s"
 		}
 	}
 }

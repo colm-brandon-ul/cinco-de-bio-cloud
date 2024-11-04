@@ -8,7 +8,7 @@ class OutputAppearanceProvider extends cinco_glsp_api_1.AppearanceProvider {
         const modelElementId = action.modelElementId;
         const element = this.getElement(modelElementId);
         const message = 'Element [' + element.type + ', ' + modelElementId + '] is changing appearance.';
-        this.warn(message);
+        this.log(message);
         return [];
         // return [appearanceUpdate];
     }

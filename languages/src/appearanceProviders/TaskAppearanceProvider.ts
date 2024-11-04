@@ -33,7 +33,8 @@ export class TaskAppearanceProvider extends AppearanceProvider {
 
         // Creat a label, input & output
 
-        // const shape = element.shape as ContainerShape;
+
+        const shape = element.shape as ContainerShape;
         // const propertyValue = shape.children?.find(shape => shape.name == "propertyValue") as Text;
 
         // 0 transparency when no incoming 1 otherwise

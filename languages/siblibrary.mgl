@@ -35,7 +35,7 @@ container Task extends SIBDef {
 
 @disable(create,delete,move,resize)
 @disable(select)
-@AppearanceProvider(SibLibInputAppearanceProvider)
+@AppearanceProvider(SibLibLabelAppearanceProvider)
 node Label {
 	style label("${name}", "${label}")
 	
@@ -61,7 +61,7 @@ abstract node IODef {
 @Hook(NodeHook,PostCreate,PostMove,PostResize,PostDelete)
 @AppearanceProvider(SibLibInputAppearanceProvider)
 node Input extends IODef {
-	style input("${name}", "${isList ? '[' : ''}", "${typeName}", "${isList ? ']' : ''}")
+	style input("${name}" ,"${typeName}")
 }
 
 @disable(resize)
@@ -73,7 +73,7 @@ node Input extends IODef {
 @Hook(NodeHook,PostCreate,PostMove,PostResize,PostDelete)
 @AppearanceProvider(SibLibOutputAppearanceProvider)
 node Output extends IODef {
-	style output("${name}", "${isList ? '[' : ''}", "${typeName}", "${isList ? ']' : ''}")
+	style output("${name}" ,"${typeName}")
 }
 
 @disable(resize)

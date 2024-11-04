@@ -9,7 +9,7 @@ class TaskAppearanceProvider extends cinco_glsp_api_1.AppearanceProvider {
         const element = this.getElement(modelElementId);
         const message = 'Element [' + element.type + ', ' + modelElementId + '] is changing appearance.';
         // Creat a label, input & output
-        // const shape = element.shape as ContainerShape;
+        const shape = element.shape;
         // const propertyValue = shape.children?.find(shape => shape.name == "propertyValue") as Text;
         // 0 transparency when no incoming 1 otherwise
         // (propertyValue.appearance as Appearance).transparency = Math.max((element as Node).incomingEdges.length, 1);

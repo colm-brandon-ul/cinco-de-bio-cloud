@@ -10,7 +10,7 @@ class CincoDeBioGenerator extends cinco_glsp_api_1.GeneratorHandler {
     execute(action, ...args) {
         // parse action
         const model = this.getElement(action.modelElementId);
-        this.info("Generating Workflow Execution Program");
+        this.warn("Generating Workflow Execution Program");
         // generate
         this.generate(model);
         this.info("Finished Generation");
