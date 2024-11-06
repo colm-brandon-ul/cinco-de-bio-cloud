@@ -1,5 +1,7 @@
 stylePath "siblibrary.msl"
 
+// @disable(create) TODO: make an issue for this and assign me - Sami
+@Hook("", PostContentChange)
 graphModel SIBLibrary {
 	diagramExtension "sibs"
 	
@@ -18,8 +20,8 @@ abstract container SIBDef {
 // @postCreate("info.scce.cinco.product.hippoflow.hook.lib.ServicePostCreate")
 // @postMove("info.scce.cinco.product.hippoflow.hook.lib.ServicePostMove")
 // @postResize("info.scce.cinco.product.hippoflow.hook.lib.ServicePostResize")
-@Hook(AutomatedHook,PostCreate, PostMove, PostResize)
-@AppearanceProvider(ServiceAppearanceProvider)
+@Hook(AutomatedHook, PostCreate, PostMove, PostResize)
+// @AppearanceProvider(ServiceAppearanceProvider)
 container Service extends SIBDef {
 	style service
 }
@@ -27,20 +29,20 @@ container Service extends SIBDef {
 // @postCreate("info.scce.cinco.product.hippoflow.hook.lib.TaskPostCreate")
 // @postMove("info.scce.cinco.product.hippoflow.hook.lib.TaskPostMove")
 // @postResize("info.scce.cinco.product.hippoflow.hook.lib.TaskPostResize")
-@Hook(InteractiveHook,PostCreate,PostMove,PostResize)
-@AppearanceProvider(TaskAppearanceProvider)
+@Hook(InteractiveHook, PostCreate, PostMove, PostResize)
+// @AppearanceProvider(TaskAppearanceProvider)
 container Task extends SIBDef {
 	style task
 }
 
 @disable(create,delete,move,resize)
 @disable(select)
-@AppearanceProvider(SibLibLabelAppearanceProvider)
 node Label {
-	style label("${name}", "${label}")
+	style label("${icon}", "${name}", "${label}")
 	
 	attr string as name := "<unnamed>"
 	attr string as label := "<unnamed>"
+    @hidden @readOnly attr string as icon := "icons/service.png"
 }
 
 /*** Input / Output ***/
@@ -59,7 +61,7 @@ abstract node IODef {
 // @postResize("info.scce.cinco.product.hippoflow.hook.NodePostResize")
 // @postDelete("info.scce.cinco.product.hippoflow.hook.NodePostDelete")
 @Hook(NodeHook,PostCreate,PostMove,PostResize,PostDelete)
-@AppearanceProvider(SibLibInputAppearanceProvider)
+// @AppearanceProvider(SibLibInputAppearanceProvider)
 node Input extends IODef {
 	style input("${name}" ,"${typeName}")
 }
@@ -71,7 +73,7 @@ node Input extends IODef {
 // @postResize("info.scce.cinco.product.hippoflow.hook.NodePostResize")
 // @postDelete("info.scce.cinco.product.hippoflow.hook.NodePostDelete")
 @Hook(NodeHook,PostCreate,PostMove,PostResize,PostDelete)
-@AppearanceProvider(SibLibOutputAppearanceProvider)
+// @AppearanceProvider(SibLibOutputAppearanceProvider)
 node Output extends IODef {
 	style output("${name}" ,"${typeName}")
 }

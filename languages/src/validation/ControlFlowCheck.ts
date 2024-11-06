@@ -12,46 +12,93 @@ export class ControlFlowCheck extends ValidationHandler {
 
         const workflow = modelElement as GraphModel;
 
+        const sibs = workflow.containedElements
+            .filter(element => (element.type == "cincodebio:automatedsib" || element.type == "cincodebio:interactivesib"));
 
-    //     const jobs = workflow.containedElements
-    //        .filter(element => element.type == "rig:job");
+        var responses: ValidationResponseAction[] = []
 
-    //     const duplicateNames = jobs
-    //        .map(element => element.getProperty("name"))
-    //        .filter((element, index, array) => array.indexOf(element) !== index)
+        const no_sucessors = sibs.filter(a => a.successors.length == 0).map(a => a.getProperty('label'))
+        const no_predecessors = sibs.filter(a => a.predecessors.length == 0).map(a => {a.getProperty('label')})
+        
+        this.log(JSON.stringify(no_sucessors))
 
-    //    //const duplicateNamedJobs = jobs.filter(job => duplicateNames.includes(job.getProperty("name")));
+        const cycles = this.hasAnyCycle(sibs)
+        this.log(`${cycles}`)
+        
+        responses.push(ValidationResponseAction.create(workflow.id,
+                workflow.id,
+                [
+                        {
+                            name: `Workflow (${workflow.id})`,
+                            message: cycles ? 'Workflow has Cycle(s)' : 'OK',
+                            status: cycles ? ValidationStatus.Error : ValidationStatus.Pass
+                        },
+                        {
+                            name: `Workflow (${workflow.id})`,
+                            message: no_sucessors.length > 1
+                            ? `A valid workflow can only have 1 SIB without an incoming ControlFlow edge, this workflow has ${no_sucessors.length}: ${JSON.stringify(no_sucessors)}`
+                            : `OK`,
+                            status: no_sucessors.length > 1 ? ValidationStatus.Error : ValidationStatus.Pass
+                        }
+                    ],
+                action.requestId
+            ));
 
-    //    const responses = jobs
-    //        .map(job => ValidationResponseAction.create(this.modelState.graphModel.id, job.id, [
-    //            {
-    //                name: `Job ${job.getProperty("name")} (${job.id})`,
-    //                message: duplicateNames.includes(job.getProperty("name")) 
-    //                    ? `Duplicate job name ${job.getProperty("name")}`
-    //                    : "Ok",
-    //                status: duplicateNames.includes(job.getProperty("name")) ? ValidationStatus.Error : ValidationStatus.Pass
-    //            }
-    //        ]), action.requestId);
-
-    //    const hasCycle = hasAnyCycle(jobs);
-
-    //    responses.push(ValidationResponseAction.create(this.modelState.graphModel.id, this.modelState.graphModel.id, [
-    //        {
-    //            name: name,
-    //            message: "Cycle Checking is currently disabled",
-    //            status: ValidationStatus.Info
-    //        }
-    //    ]));
-
-
-        return [];
-        // return responses;
+        return responses;
     }
 
     override canExecute(action: ValidationRequestAction, ...args: unknown[]): Promise<boolean> | boolean {
         const element = this.getElement(action.modelElementId);
         return element !== undefined;
     }
+
+    hasAnyCycle(jobs : Node[]) {
+        const path = [];
+        const cache = {};
+    
+        for (let job of jobs) {
+            if (this.isCyclic(job, path, cache))
+                return true;
+        }
+    
+        return false;
+     }
+
+    isCyclic(node: Node, path: Node[], cache: { [key: string]: boolean }): boolean {
+        // Could make this more useful by identify the path which has cycles?
+
+
+        // Check the cache first
+        if (cache[node.id] !== undefined) {
+          return cache[node.id];
+        }
+      
+        // Add the current node to the path
+        path.push(node);
+      
+        // Check if the current node is already in the path, indicating a cycle
+        if (path.indexOf(node, 0) !== path.lastIndexOf(node)) {
+          // Cycle found, cache the result
+          cache[node.id] = true;
+          return true;
+        }
+      
+        // Recursively check the node's successors
+        for (let successor of node.successors) {
+          if (this.isCyclic(successor, path, cache)) {
+            // Cycle found, cache the result
+            cache[node.id] = true;
+            return true;
+          }
+        }
+      
+        // No cycle found, remove the current node from the path and cache the result
+        path.splice(path.indexOf(node, 0), 1);
+        cache[node.id] = false;
+        return false;
+      }
+
+
 }
 
 

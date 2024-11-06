@@ -12,7 +12,8 @@ export const PADDING: number = 5
 const map = {
     "siblibrary:input":IO_HEIGHT,
     "siblibrary:label": LABEL_HEIGHT,
-    "siblibrary:output": IO_HEIGHT
+    "siblibrary:output": IO_HEIGHT,
+    "siblibrary:branch" : IO_HEIGHT
 }
 
 
@@ -22,8 +23,7 @@ export class NodeHook extends AbstractNodeHook {
    
     override postCreate(node: Node): void {
         // node.setProperty("name", `${this.VERBS[this.random(0, this.VERBS.length)]} ${this.NOUNS[this.random(0, this.NOUNS.length)]}`)
-        const sib = node.parent as Container        
-        layout(sib)
+        layout(node.parent as Container)
     }
 
     override postMove(node: Node, oldPosition?: Point | undefined): void {

@@ -30,9 +30,18 @@ export class InputAppearanceProvider extends AppearanceProvider {
         const element = this.getElement(modelElementId);
 
         const message = 'Element [' + element.type + ', ' + modelElementId + '] is changing appearance.';
-        this.log(message);
+        
+        let labelNode = element as Node
+        this.log('HELLO')
+        this.log(JSON.stringify(labelNode.properties))
+        this.log(`${labelNode.isPrime}`)
 
-
+        if (labelNode.isPrime && labelNode.primeReference?.properties){
+            this.log(JSON.stringify(labelNode.primeReference?.properties))
+            this.log(JSON.stringify(labelNode.properties))
+            labelNode.properties = labelNode.primeReference?.properties
+        }
+        
 
         return [];
        // return [appearanceUpdate];

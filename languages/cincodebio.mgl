@@ -6,7 +6,7 @@ stylePath "cincodebio.msl"
 // @mcam_checkmodule("info.scce.cinco.product.hippoflow.check.SIBCheck")
 // @mcam_checkmodule("info.scce.cinco.product.hippoflow.check.DataFlowCheck")
 // @mcam_checkmodule("info.scce.cinco.product.hippoflow.check.ControlFlowCheck")
-@Validation(SIBCheck)
+// @Validation(SibCheck)
 @Validation(DataFlowCheck)
 @Validation(ControlFlowCheck)
 @GeneratorAction(CincoDeBioGenerator)
@@ -68,7 +68,6 @@ node SIBLabel {
 abstract node IO {
 	// @mcam_label
 	attr string as name := "port"
-	attr boolean as isList := "false"
 }
 
 @disable(create,delete,move,resize)
@@ -106,4 +105,42 @@ edge ControlFlow {
 @Hook(DataFlowHook, PostCreate)
 edge DataFlow {
 	style dataFlow
+}
+
+
+node Blah {
+    style dataFlow
+    attr SibValue as values
+}
+
+abstract type SibValue {
+
+}
+
+type StringValue extends SibValue {
+    // @regex('/*email@email*/')
+    attr string as value
+}
+type EnumValue extends SibValue {
+    @hidden
+    attr string as enum_values
+
+    // @enum("$enum_values")
+    attr string as value
+}
+
+type IntegerValue extends SibValue {
+    @hidden
+    @readOnly
+    attr number as min_scale = 1
+    @hidden
+    @readOnly
+    attr number as max_scale = 10
+
+    // @interval("min_scale", "max_scale")
+    attr number as scale = 5
+}
+
+type ColorValue extends SibValue {
+    @color attr string as hex = 5
 }

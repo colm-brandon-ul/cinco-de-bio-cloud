@@ -1,4 +1,4 @@
-import { Node, AbstractNodeHook, LanguageFilesRegistry, Container, ResizeBounds } from '@cinco-glsp/cinco-glsp-api';
+import { Node, AbstractNodeHook, LanguageFilesRegistry, Container, ResizeBounds, GraphModelWatcher, readJson } from '@cinco-glsp/cinco-glsp-api';
 import { MetaSpecification, getGraphSpecOf } from '@cinco-glsp/cinco-glsp-common';
 import { Point } from 'sprotty-protocol';
 
@@ -11,46 +11,67 @@ export const PADDING: number = 5
 const map = {
     "siblibrary:input":IO_HEIGHT,
     "siblibrary:label": LABEL_HEIGHT,
-    "siblibrary:output": IO_HEIGHT
+    "siblibrary:output": IO_HEIGHT,
+    "siblibrary:branch" : IO_HEIGHT
 }
 
 
 export class InteractiveHook extends AbstractNodeHook {
     override CHANNEL_NAME: string | undefined = 'InteractiveHook [' + this.modelState.root.id + ']';
+    watching = false;
 
-   
+    postContentChange(model: Node): void { // TODO: Sami - add issue for onOpen Annotation and add me 
+        if(!this.watching) {
+            GraphModelWatcher.addCallback('hippoFlow_' + model.id, async dirtyFiles => {
+                for (const dirtyFile of dirtyFiles) {
+                    const model = (await readJson(dirtyFile.path, { hideError: true })) as any | undefined;
+                    if (model && model.type == 'siblibrary.siblibrary') {
+    
+                    } else if (model && model.type == 'cincodebio.cincodebiographmodel') {
+    
+                    }
+                }
+            });
+            this.watching = true;
+        }
+    }
+    
     override postCreate(node: Node): void {
         // node.setProperty("name", `${this.VERBS[this.random(0, this.VERBS.length)]} ${this.NOUNS[this.random(0, this.NOUNS.length)]}`)
         node.setProperty("name", 'interactive')
         node.setProperty("label", 'Interactive')
 
-        var input = new Node() as Node;
-        var label = new Node() as Node;
         var output = new Node();
+        output.type = "siblibrary:output";
+        output.initializeProperties();
         
         const image = node as Container
         var delta = 0
 
+        var input = new Node() as Node;
+        input.type = "siblibrary:input";
+        input.initializeProperties();
         input.position = { x : 0, y : HEADER_HEIGHT }
         input.size =  { width: node.size.width, height: IO_HEIGHT }
-        input.type = "siblibrary:input";
         delta = (input.position.y + input.size.height + PADDING)
         input.setProperty('name','name')
         input.setProperty('typeName','typeName')
 
+        var label = new Node() as Node;
+        label.type = "siblibrary:label";
+        label.initializeProperties();
         this.log(JSON.stringify(label.properties))
-        label.properties
         label.position = { x : 0, y : delta}
         label.size =  { width: node.size.width, height: LABEL_HEIGHT }
-        label.type = "siblibrary:label";
         delta = (label.position.y + label.size.height + PADDING)
         label.setProperty('name',node.getProperty('name'))
         label.setProperty('label',node.getProperty('label'))
+        label.setProperty('icon', 'icons/task.png');
+        label['_attributes']['icon'] = 'icons/task.png';
         this.log(JSON.stringify(label.properties))
 
         output.position = { x : 0, y : delta }
         output.size =  { width: node.size.width, height: IO_HEIGHT }
-        output.type = "siblibrary:output";
         delta = (output.position.y + output.size.height + PADDING)
 
         image.containments.push(input,output,label);

@@ -31,24 +31,24 @@ export class SibLibLabelAppearanceProvider extends AppearanceProvider {
         let element = this.getElement(modelElementId);
 
         const message = 'Element [' + element.type + ', ' + modelElementId + '] is woohoo changing appearance.';
-        this.warn(message)
         this.log('HELLO')
         let labelNode = element as Node
 
-        let sib = labelNode.parent as Container
 
-        const shape = element.shape as ContainerShape;
+        const shape = Object.assign({}, element.shape) as ContainerShape;
+
         const propertyValue = shape.children?.find(shape => shape.type == "IMAGE") as Image;
+
+        let sib = labelNode.parent as Container
         this.log(JSON.stringify(labelNode.properties))
         if (labelNode.getProperty('name') != sib.getProperty('name')){
             labelNode.setProperty('name', sib.getProperty('name'))
         }
-
         if (labelNode.getProperty('label') != sib.getProperty('label')){
             labelNode.setProperty('label', sib.getProperty('label'))
         }
-        
 
+        /*
         shape.children?.forEach(a => {
             if (a.type == 'IMAGE'){
                 const b = a as Image
@@ -68,7 +68,8 @@ export class SibLibLabelAppearanceProvider extends AppearanceProvider {
                 
             }
         })
-        
+        element.shape = shape;
+        */
 
         const appearanceUpdate = ApplyAppearanceUpdateAction.create(modelElementId);
 

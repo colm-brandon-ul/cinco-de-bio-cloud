@@ -26,6 +26,7 @@ class InteractiveSibHook extends cinco_glsp_api_1.AbstractNodeHook {
             image.size = reference.size;
             node.setProperty('name', reference.getProperty('name'));
             node.setProperty('label', reference.getProperty('label'));
+            // this.actionDispatcher.dispatch()
             reference.containments.forEach((child) => {
                 if (child.type == 'siblibrary:input') {
                     let n = new cinco_glsp_api_1.Node();
@@ -55,6 +56,7 @@ class InteractiveSibHook extends cinco_glsp_api_1.AbstractNodeHook {
                     image.containments.push(n);
                 }
             });
+            layout(image);
         }
     }
     postMove(node, oldPosition) {

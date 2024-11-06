@@ -11,7 +11,8 @@ export const PADDING: number = 5
 const map = {
     "siblibrary:input":IO_HEIGHT,
     "siblibrary:label": LABEL_HEIGHT,
-    "siblibrary:output": IO_HEIGHT
+    "siblibrary:output": IO_HEIGHT,
+    "siblibrary:branch" : IO_HEIGHT
 }
 
 
@@ -23,33 +24,38 @@ export class AutomatedHook extends AbstractNodeHook {
         node.setProperty("name", 'automated')
         node.setProperty("label", 'Automated')
 
-        const input = new Node();
-        const label = new Node()
-        const output = new Node();
-        
         const image = node as Container
         var delta = 0
 
-        input.position = { x : 0, y : HEADER_HEIGHT }
-        input.size =  { width: node.size.width, height: IO_HEIGHT }
+        var input = new Node() as Node;
         input.type = "siblibrary:input";
-        delta = (input.position.y + input.size.height + PADDING)
+        input.position = { x : 0, y : HEADER_HEIGHT };
+        input.size =  { width: node.size.width, height: IO_HEIGHT };
+        input.initializeProperties();
+        delta = (input.position.y + input.size.height + PADDING);
 
-        label.position = { x : 0, y : delta}
-        label.size =  { width: node.size.width, height: LABEL_HEIGHT }
+        var label = new Node() as Node;
         label.type = "siblibrary:label";
-        delta = (label.position.y + label.size.height + PADDING)
+        label.position = { x : 0, y : delta}
+        label.size =  { width: node.size.width, height: LABEL_HEIGHT };
+        label.initializeProperties();
+        label.setProperty('icon', 'icons/service.png');
+        label['_attributes']['icon'] = 'icons/service.png';
 
-        output.position = { x : 0, y : delta }
-        output.size =  { width: node.size.width, height: IO_HEIGHT }
+        label.setProperty('name', image.getProperty('name'));
+        label.setProperty('label', image.getProperty('label'));
+        delta = (label.position.y + label.size.height + PADDING);
+
+        var output = new Node();
         output.type = "siblibrary:output";
-        delta = (output.position.y + output.size.height + PADDING)
+        output.position = { x : 0, y : delta }
+        output.size =  { width: node.size.width, height: IO_HEIGHT };
+        output.initializeProperties();
+        delta = (output.position.y + output.size.height + PADDING);
 
 
         image.containments.push(input,output,label);
         image.size.height = (delta + FOOTER_HEIGHT)
-        
-
     }
 
     override postMove(node: Node, oldPosition?: Point | undefined): void {

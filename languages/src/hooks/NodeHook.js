@@ -10,7 +10,8 @@ exports.PADDING = 5;
 const map = {
     "siblibrary:input": exports.IO_HEIGHT,
     "siblibrary:label": exports.LABEL_HEIGHT,
-    "siblibrary:output": exports.IO_HEIGHT
+    "siblibrary:output": exports.IO_HEIGHT,
+    "siblibrary:branch": exports.IO_HEIGHT
 };
 class NodeHook extends cinco_glsp_api_1.AbstractNodeHook {
     constructor() {
@@ -19,8 +20,7 @@ class NodeHook extends cinco_glsp_api_1.AbstractNodeHook {
     }
     postCreate(node) {
         // node.setProperty("name", `${this.VERBS[this.random(0, this.VERBS.length)]} ${this.NOUNS[this.random(0, this.NOUNS.length)]}`)
-        const sib = node.parent;
-        layout(sib);
+        layout(node.parent);
     }
     postMove(node, oldPosition) {
         layout(node.parent);

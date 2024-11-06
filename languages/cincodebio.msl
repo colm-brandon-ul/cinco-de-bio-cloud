@@ -15,8 +15,10 @@ appearance labelFontItalics {
 }
 
 appearance controlFlowAppearance {
-	lineWidth 10
+	lineWidth 5
+    lineStyle DASH
 	foreground (77,77,77)
+    
 }
 
 appearance dataFlowAppearance extends default {
@@ -28,7 +30,7 @@ appearance dataFlowAppearance extends default {
 // ############ NODE STYLES #############
 
 nodeStyle sib {
-	appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.SIBAppearance")
+	// appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.SIBAppearance")
 	roundedRectangle {
 		appearance extends default {
 			background (230,230,230)
@@ -39,7 +41,7 @@ nodeStyle sib {
 }
 
 nodeStyle sibLabel(1) {
-	appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.SIBLabelAppearance")
+	// appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.SIBLabelAppearance")
 	rectangle  {
 		appearance extends default {
 			transparency 1.0
@@ -59,7 +61,7 @@ nodeStyle sibLabel(1) {
 }
 
 nodeStyle inputPort(4) {
-	appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.InputPortAppearance")
+	// appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.InputPortAppearance")
 	rectangle  {
 		appearance extends default {
 			lineWidth 0
@@ -81,7 +83,7 @@ nodeStyle inputPort(4) {
 }
 
 nodeStyle outputPort(4) {
-	appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.OutputPortAppearance")
+	// appearanceProvider("info.scce.cinco.product.hippoflow.appear.flow.OutputPortAppearance")
 	rectangle  {
 		appearance extends default {
 			lineWidth 0
@@ -90,7 +92,7 @@ nodeStyle outputPort(4) {
 		}
 		size (236,30)
 		image {
-			position (LEFT, MIDDLE)
+			position (RIGHT, MIDDLE)
 		 	size (fix 15, fix 30)
 		 	path ( "icons/arrow-output-filled-300.png" )
 		}

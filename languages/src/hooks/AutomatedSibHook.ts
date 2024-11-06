@@ -1,5 +1,9 @@
 import { Node, AbstractNodeHook, LanguageFilesRegistry, Container, ResizeBounds } from '@cinco-glsp/cinco-glsp-api';
 import { MetaSpecification, getGraphSpecOf } from '@cinco-glsp/cinco-glsp-common';
+import { Action, CustomAction } from '@cinco-glsp/cinco-glsp-common';
+import { CreateNodeOperation } from '@eclipse-glsp/server';
+
+
 import { Point } from 'sprotty-protocol';
 
 export const HEADER_HEIGHT: number = 20;
@@ -16,7 +20,6 @@ const map = {
 
 export class AutomatedSibHook extends AbstractNodeHook {
     override CHANNEL_NAME: string | undefined = 'AutomatedSibHook [' + this.modelState.root.id + ']';
-
    
     override postCreate(node: Node): void {
         // node.setProperty("name", `${this.VERBS[this.random(0, this.VERBS.length)]} ${this.NOUNS[this.random(0, this.NOUNS.length)]}`)
@@ -27,10 +30,13 @@ export class AutomatedSibHook extends AbstractNodeHook {
             node.setProperty('name',reference.getProperty('name'))
             node.setProperty('label',reference.getProperty('label'))
             image.size = reference.size
-            
+            this.log(referenceInfo.modelType)
+
+
             reference.containments.forEach((child: Node) => {
 
                 if (child.type == 'siblibrary:input'){
+
                     let n = new Node()
                     n.position = { x : child.position.x, y : child.position.y }
                     n.size =  { width: node.size.width, height: child.size.height }
@@ -38,6 +44,8 @@ export class AutomatedSibHook extends AbstractNodeHook {
                     n.setProperty('name',child.getProperty('name'))
                     n.setProperty('typeName',child.getProperty('typeName'))
                     image.containments.push(n)
+                    
+                   
 
                 }
 
@@ -64,6 +72,7 @@ export class AutomatedSibHook extends AbstractNodeHook {
                 }
             });
             
+            layout(image)
             
         }
     }
@@ -125,3 +134,6 @@ export function layout(sib : Container, ignore? : Node) {
 
 
 LanguageFilesRegistry.register(AutomatedSibHook);
+
+
+

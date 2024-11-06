@@ -10,7 +10,8 @@ exports.PADDING = 5;
 const map = {
     "siblibrary:input": exports.IO_HEIGHT,
     "siblibrary:label": exports.LABEL_HEIGHT,
-    "siblibrary:output": exports.IO_HEIGHT
+    "siblibrary:output": exports.IO_HEIGHT,
+    "siblibrary:branch": exports.IO_HEIGHT
 };
 class AutomatedHook extends cinco_glsp_api_1.AbstractNodeHook {
     constructor() {
@@ -20,22 +21,29 @@ class AutomatedHook extends cinco_glsp_api_1.AbstractNodeHook {
     postCreate(node) {
         node.setProperty("name", 'automated');
         node.setProperty("label", 'Automated');
-        const input = new cinco_glsp_api_1.Node();
-        const label = new cinco_glsp_api_1.Node();
-        const output = new cinco_glsp_api_1.Node();
         const image = node;
         var delta = 0;
+        var input = new cinco_glsp_api_1.Node();
+        input.type = "siblibrary:input";
         input.position = { x: 0, y: exports.HEADER_HEIGHT };
         input.size = { width: node.size.width, height: exports.IO_HEIGHT };
-        input.type = "siblibrary:input";
+        input.initializeProperties();
         delta = (input.position.y + input.size.height + exports.PADDING);
+        var label = new cinco_glsp_api_1.Node();
+        label.type = "siblibrary:label";
         label.position = { x: 0, y: delta };
         label.size = { width: node.size.width, height: exports.LABEL_HEIGHT };
-        label.type = "siblibrary:label";
+        label.initializeProperties();
+        label.setProperty('icon', 'icons/service.png');
+        label['_attributes']['icon'] = 'icons/service.png';
+        label.setProperty('name', image.getProperty('name'));
+        label.setProperty('label', image.getProperty('label'));
         delta = (label.position.y + label.size.height + exports.PADDING);
+        var output = new cinco_glsp_api_1.Node();
+        output.type = "siblibrary:output";
         output.position = { x: 0, y: delta };
         output.size = { width: node.size.width, height: exports.IO_HEIGHT };
-        output.type = "siblibrary:output";
+        output.initializeProperties();
         delta = (output.position.y + output.size.height + exports.PADDING);
         image.containments.push(input, output, label);
         image.size.height = (delta + exports.FOOTER_HEIGHT);

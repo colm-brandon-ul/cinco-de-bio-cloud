@@ -36,7 +36,7 @@ nodeStyle task {
 	}
 }
 
-nodeStyle label(2) {
+nodeStyle label(3) {
 	// appearanceProvider("info.scce.cinco.product.hippoflow.appear.lib.LabelAppearance")
 	rectangle  {
 		appearance extends default {
@@ -46,17 +46,17 @@ nodeStyle label(2) {
 		image {
 			position (LEFT 8, MIDDLE)
 		 	size (fix 24, fix 24)
-		 	path ("icons/service.png")
+		 	path ("%1$s")
 		}
 		text {
 			appearance labelFontItalics
 			position (LEFT 40, TOP 7)
-		 	value "%1$s"
+		 	value "%2$s"
 		}
 		text {
 			appearance labelFont
 			position (LEFT 40, TOP 24)
-		 	value "%2$s"
+		 	value "%3$s"
 		}
 	}
 }

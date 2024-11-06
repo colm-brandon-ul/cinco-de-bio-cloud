@@ -29,6 +29,11 @@ export class InteractiveSibHook extends AbstractNodeHook {
 
             node.setProperty('name',reference.getProperty('name'))
             node.setProperty('label',reference.getProperty('label'))
+
+            // this.actionDispatcher.dispatch()
+
+            
+    
             
             reference.containments.forEach((child: Node) => {
 
@@ -66,6 +71,7 @@ export class InteractiveSibHook extends AbstractNodeHook {
                 }
             });
                
+           layout(image) 
         }
     }
 

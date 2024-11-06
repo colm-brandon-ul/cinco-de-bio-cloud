@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.layout = exports.InteractiveHook = exports.PADDING = exports.LABEL_HEIGHT = exports.IO_HEIGHT = exports.FOOTER_HEIGHT = exports.HEADER_HEIGHT = void 0;
 const cinco_glsp_api_1 = require("@cinco-glsp/cinco-glsp-api");
@@ -10,40 +19,56 @@ exports.PADDING = 5;
 const map = {
     "siblibrary:input": exports.IO_HEIGHT,
     "siblibrary:label": exports.LABEL_HEIGHT,
-    "siblibrary:output": exports.IO_HEIGHT
+    "siblibrary:output": exports.IO_HEIGHT,
+    "siblibrary:branch": exports.IO_HEIGHT
 };
 class InteractiveHook extends cinco_glsp_api_1.AbstractNodeHook {
     constructor() {
         super(...arguments);
         this.CHANNEL_NAME = 'InteractiveHook [' + this.modelState.root.id + ']';
     }
+    postContentChange(node) {
+        cinco_glsp_api_1.GraphModelWatcher.addCallback('hippoFlow:' + node.id, (dirtyFiles) => __awaiter(this, void 0, void 0, function* () {
+            for (const dirtyFile of dirtyFiles) {
+                const model = (yield (0, cinco_glsp_api_1.readJson)(dirtyFile.path, { hideError: true }));
+                if (model && model.type && modelState.graphModel.id === model.id) {
+                    // update model of client/canvas
+                    this.updateClientOnChange(modelState, clientId);
+                }
+            }
+        }));
+    }
     postCreate(node) {
         // node.setProperty("name", `${this.VERBS[this.random(0, this.VERBS.length)]} ${this.NOUNS[this.random(0, this.NOUNS.length)]}`)
         node.setProperty("name", 'interactive');
         node.setProperty("label", 'Interactive');
-        var input = new cinco_glsp_api_1.Node();
-        var label = new cinco_glsp_api_1.Node();
         var output = new cinco_glsp_api_1.Node();
+        output.type = "siblibrary:output";
+        output.initializeProperties();
         const image = node;
         var delta = 0;
+        var input = new cinco_glsp_api_1.Node();
+        input.type = "siblibrary:input";
+        input.initializeProperties();
         input.position = { x: 0, y: exports.HEADER_HEIGHT };
         input.size = { width: node.size.width, height: exports.IO_HEIGHT };
-        input.type = "siblibrary:input";
         delta = (input.position.y + input.size.height + exports.PADDING);
         input.setProperty('name', 'name');
         input.setProperty('typeName', 'typeName');
+        var label = new cinco_glsp_api_1.Node();
+        label.type = "siblibrary:label";
+        label.initializeProperties();
         this.log(JSON.stringify(label.properties));
-        label.properties;
         label.position = { x: 0, y: delta };
         label.size = { width: node.size.width, height: exports.LABEL_HEIGHT };
-        label.type = "siblibrary:label";
         delta = (label.position.y + label.size.height + exports.PADDING);
         label.setProperty('name', node.getProperty('name'));
         label.setProperty('label', node.getProperty('label'));
+        label.setProperty('icon', 'icons/task.png');
+        label['_attributes']['icon'] = 'icons/task.png';
         this.log(JSON.stringify(label.properties));
         output.position = { x: 0, y: delta };
         output.size = { width: node.size.width, height: exports.IO_HEIGHT };
-        output.type = "siblibrary:output";
         delta = (output.position.y + output.size.height + exports.PADDING);
         image.containments.push(input, output, label);
         image.size.height = (delta + exports.FOOTER_HEIGHT);
